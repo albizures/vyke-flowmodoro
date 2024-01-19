@@ -1,4 +1,3 @@
-import defaultTheme from 'tailwindcss/defaultTheme'
 import { themes } from './src/themes'
 
 /** @type {import('tailwindcss').Config} */
@@ -7,10 +6,6 @@ export default {
 	safelist: ['animate-shake'],
 	theme: {
 		extend: {
-			fontFamily: {
-				serif: ['Oswald Variable', ...defaultTheme.fontFamily.serif],
-				sans: ['Nunito Variable', ...defaultTheme.fontFamily.sans]
-			},
 			animation: {
 				'shake': 'shake .5s both',
 			},

@@ -1,0 +1,19 @@
+---
+import Icon, { type IconName } from "../Icon.astro";
+export type Props = {
+  href: string;
+  isActive: boolean;
+  icon: IconName;
+  label: string;
+};
+
+const { href, isActive, icon, label } = Astro.props;
+---
+
+<a
+  {href}
+  class:list={["tab md:text-xl text-sm gap-1", { "tab-active": isActive }]}
+>
+  <Icon icon={icon} />
+  {label}
+</a>

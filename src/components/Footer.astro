@@ -1,0 +1,52 @@
+---
+import Icon from "./Icon.astro";
+---
+
+<footer class="mt-16 p-10 bg-neutral text-neutral-content">
+  <div class="mx-auto max-w-xl footer">
+    <nav>
+      <header class="footer-title">Open source</header>
+      <a
+        href="https://github.com/albizures/vyke-results"
+        class="link link-hover"
+      >
+        @vyke/results
+      </a>
+      <a href="https://github.com/albizures/vyke-dom" class="link link-hover">
+        @vyke/dom
+      </a>
+    </nav>
+    <nav>
+      <header class="footer-title">Tools</header>
+      <a href="https://clock.vyke.dev" class="link link-hover">Online Clock</a>
+    </nav>
+    <nav>
+      <header class="footer-title">Other</header>
+      <a class="link link-hover">Terms of use</a>
+      <a class="link link-hover">Privacy policy</a>
+      <a class="link link-hover">Cookie policy</a>
+    </nav>
+  </div>
+</footer>
+
+<footer
+  class="px-10 py-4 bg-neutral border-t border-opacity-20 border-neutral-content text-neutral-content"
+>
+  <div class="footer mx-auto max-w-xl">
+    <aside class="items-center grid-flow-col">
+      <p>A vyke project, <br />by Jose Albizures</p>
+    </aside>
+    <nav class="md:place-self-center md:justify-self-end">
+      <div class="grid grid-flow-col gap-4">
+        <a href="https://twitter.com/albzrs">
+          <span class="sr-only">twitter link</span>
+          <Icon class="text-xl" icon="twitter" />
+        </a>
+        <a href="https://github.com/albizures">
+          <span class="sr-only">github link</span>
+          <Icon class="text-xl" icon="github" />
+        </a>
+      </div>
+    </nav>
+  </div>
+</footer>

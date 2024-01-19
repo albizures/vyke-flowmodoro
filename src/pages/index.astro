@@ -1,0 +1,347 @@
+---
+import Footer from "../components/Footer.astro";
+import Icon from "../components/Icon.astro";
+import StopwatchButton from "../components/StopwatchButton.astro";
+// import Menu from "../components/menu/Menu.astro";
+import CenterHero from "../layouts/CenterHero.astro";
+import Page from "../layouts/Page.astro";
+import * as About from "../components/about.md";
+import Input from "../components/Input.astro";
+import Button from "../components/Button.astro";
+---
+
+<Page>
+  <CenterHero>
+    <div>
+      <h1 class="text-6xl font-semibold font-serif">Flowmodoro</h1>
+    </div>
+    <div class="mt-20">
+      <span
+        class="countdown text-base-content font-mono text-5xl sm:text-8xl md:text-9xl"
+      >
+        <!-- <span class="value-hours" style="--value:00;"></span>: -->
+        <span class="value-minutes" style="--value:00;"></span>:
+        <span class="value-seconds" style="--value:00;"></span>
+      </span>
+      <span
+        class="countdown text-base-content font-mono text-2xl sm:text-5xl md:text-6xl"
+      >
+        :<span class="value-millis no-transition" style="--value:00;"></span>
+      </span>
+    </div>
+    <div class="flex mt-4">
+      <div>
+        In:
+        <div class="bg-base-300 inline-block rounded px-2 in-break-label">
+          break
+        </div>
+        <div class="bg-base-300 inline-block rounded px-2 in-focus-label">
+          focus
+        </div>
+      </div>
+      <div class="divider divider-horizontal"></div>
+      <div>
+        <span class="opacity-80">Break time:</span>
+        <span class="bg-base-300 inline-block rounded px-2 break-time-label">
+          0
+        </span>
+      </div>
+      <div class="divider divider-horizontal"></div>
+      <div>
+        <span class="opacity-80">Sessions:</span>
+        <span class="bg-base-300 inline-block rounded px-2">0</span>
+      </div>
+    </div>
+    <div class="flex gap-2 mt-5">
+      <StopwatchButton label="play" classId="play-btn" class="btn-primary">
+        <Icon icon="play" />
+      </StopwatchButton>
+      <StopwatchButton
+        label="stop"
+        class="hidden btn-primary"
+        classId="stop-btn"
+      >
+        <Icon icon="stop" />
+      </StopwatchButton>
+      <StopwatchButton label="reset" classId="reset-btn">
+        <Icon icon="reload" />
+      </StopwatchButton>
+      <StopwatchButton
+        label="settings"
+        classId="settings-btn"
+        class="btn-secondary"
+      >
+        <Icon icon="settings" class="transform scale-125" />
+      </StopwatchButton>
+    </div>
+
+    <div
+      class="settings-panel flex hidden justify-center items-center absolute w-full h-full inset-0 bg-base-100"
+    >
+      <div class="mx-auto max-w-xl">
+        <Input
+          defaultValue={5}
+          classId="break-time-ratio-input"
+          label="Break time ratio:"
+          bottomLeftLabel="This value will divide the amount of time worked"
+        />
+        <div class="form-control">
+          <label class="label cursor-pointer">
+            <span class="label-text">Auto Start Break</span>
+            <input type="checkbox" class="toggle auto-start-break-toggle" />
+          </label>
+        </div>
+        <div class="form-control">
+          <label class="label cursor-pointer">
+            <span class="label-text">Auto Start Focus</span>
+            <input type="checkbox" class="toggle auto-start-focus-toggle" />
+          </label>
+        </div>
+        <div class="text-center mt-6">
+          <Button classId="close-settings-btn" class="uppercase" type="primary">
+            close
+          </Button>
+        </div>
+      </div>
+    </div>
+  </CenterHero>
+
+  <div
+    class="mx-auto max-w-xl prose-h2:font-serif prose prose-p:text-justify prose-h2:text-center"
+    set:html={About.compiledContent()}
+  />
+  <Footer />
+</Page>
+
+<script>
+  import requestAnimationFrames from "request-animation-frames";
+  import { query, select } from "@vyke/dom";
+  import { unwrap } from "@vyke/results";
+  import { fromMilliToTime, type TimeValues } from "../entities/time";
+  import { hide, setStyleVar, show } from "../entities/html";
+  import {
+    startTime,
+    breakTime,
+    breakTimeRatio,
+    status,
+    autoStartBreak,
+    autoStartFocus,
+  } from "../entities/value";
+
+  const [
+    settingsBtn,
+    settingsPanel,
+    closeSettingsBtn,
+    breakTimeRatioInput,
+    autoStartBreakToggle,
+    autoStartFocusToggle,
+  ] = unwrap(
+    select(
+      query<HTMLButtonElement>(".settings-btn"),
+      query<HTMLDivElement>(".settings-panel"),
+      query<HTMLDivElement>(".close-settings-btn"),
+      query<HTMLInputElement>(".break-time-ratio-input"),
+      query<HTMLInputElement>(".auto-start-break-toggle"),
+      query<HTMLInputElement>(".auto-start-focus-toggle")
+    )
+  );
+
+  breakTimeRatioInput.value = String(breakTimeRatio.value);
+  breakTimeRatioInput.onchange = () => {
+    const value = Number(breakTimeRatioInput.value);
+    if (Number.isNaN(value)) {
+      breakTimeRatioInput.value = String(breakTimeRatio.value);
+    } else {
+      breakTimeRatio.value = value;
+    }
+  };
+
+  autoStartBreakToggle.checked = autoStartBreak.value;
+  autoStartBreakToggle.onchange = () => {
+    autoStartBreak.value = autoStartBreakToggle.checked;
+  };
+
+  autoStartFocusToggle.checked = autoStartFocus.value;
+  autoStartFocusToggle.onchange = () => {
+    autoStartFocus.value = autoStartFocusToggle.checked;
+  };
+
+  const [
+    minutes,
+    seconds,
+    millis,
+    playBtn,
+    stopBtn,
+    resetBtn,
+    breakTimeLabel,
+    inBreakLabel,
+    inFocusLabel,
+  ] = unwrap(
+    select(
+      query<HTMLElement>(".value-minutes"),
+      query<HTMLElement>(".value-seconds"),
+      query<HTMLElement>(".value-millis"),
+      query<HTMLButtonElement>(".play-btn"),
+      query<HTMLButtonElement>(".stop-btn"),
+      query<HTMLButtonElement>(".reset-btn"),
+      query<HTMLSpanElement>(".break-time-label"),
+      query<HTMLSpanElement>(".in-break-label"),
+      query<HTMLSpanElement>(".in-focus-label")
+    )
+  );
+  const cssVar = "--value";
+
+  if (status.value === "focus") {
+    run();
+    showStopBtn();
+    showInFocus();
+  }
+
+  if (status.value === "break") {
+    run();
+    showStopBtn();
+    showInBreak();
+  }
+
+  if (status.value === "stopped-focus") {
+    showInBreak();
+    updateBreakTimeLabel(breakTime.value);
+  }
+
+  if (status.value === "stopped-break") {
+    showInFocus();
+  }
+
+  function showPlayBtn() {
+    show(playBtn);
+    hide(stopBtn);
+  }
+
+  function showStopBtn() {
+    show(stopBtn);
+    hide(playBtn);
+  }
+
+  function showInFocus() {
+    show(inFocusLabel);
+    hide(inBreakLabel);
+  }
+
+  function showInBreak() {
+    show(inBreakLabel);
+    hide(inFocusLabel);
+  }
+
+  playBtn.onclick = () => {
+    if (status.value === "stopped-break") {
+      startFocus();
+    } else {
+      startBreak();
+    }
+  };
+
+  function startBreak() {
+    startTime.value = Date.now();
+    status.value = "break";
+
+    showInBreak();
+    showStopBtn();
+    run();
+  }
+
+  function startFocus() {
+    startTime.value = Date.now();
+    breakTime.value = 0;
+    status.value = "focus";
+
+    showInFocus();
+    showStopBtn();
+    run();
+  }
+
+  settingsBtn.onclick = () => {
+    show(settingsPanel);
+  };
+
+  closeSettingsBtn.onclick = () => {
+    hide(settingsPanel);
+  };
+
+  resetBtn.onclick = () => {
+    startTime.value = Date.now();
+    if (status.value === "focus") {
+      status.value = "stopped-break";
+      breakTime.value = 0;
+    }
+    if (status.value === "break") {
+      status.value = "stopped-focus";
+    }
+  };
+
+  stopBtn.onclick = () => {
+    if (status.value === "focus") {
+      const delta = Date.now() - startTime.value;
+      breakTime.value = delta / breakTimeRatio.value;
+
+      if (autoStartBreak.value) {
+        startBreak();
+      } else {
+        updateBreakTimeLabel(delta);
+        status.value = "stopped-focus";
+        showPlayBtn();
+      }
+      showInBreak();
+    } else if (status.value === "break") {
+      status.value = "stopped-break";
+      showInFocus();
+      showPlayBtn();
+    }
+  };
+
+  async function run() {
+    for await (const _timestamp of requestAnimationFrames()) {
+      let delta = 0;
+      if (status.value === "break") {
+        delta = startTime.value + breakTime.value - Date.now();
+
+        if (delta < 0) {
+          if (autoStartFocus.value) {
+            startFocus();
+          } else {
+            status.value = "stopped-break";
+            update(fromMilliToTime(0));
+          }
+          break;
+        }
+      } else if (status.value === "focus") {
+        delta = Date.now() - startTime.value;
+
+        updateBreakTimeLabel(delta);
+      }
+
+      update(fromMilliToTime(delta));
+    }
+  }
+
+  function getCurrentBreakTime(delta: number) {
+    return delta / breakTimeRatio.value;
+  }
+
+  function updateBreakTimeLabel(delta: number) {
+    breakTimeLabel.textContent = String(
+      Math.round(getCurrentBreakTime(delta) / (1000 * 60))
+    );
+  }
+
+  function update(values: TimeValues) {
+    setStyleVar(minutes, cssVar, values.minutes);
+    setStyleVar(seconds, cssVar, values.seconds);
+    setStyleVar(millis, cssVar, values.millis);
+  }
+</script>
+
+<style>
+  .no-transition:before {
+    transition-duration: 0s;
+  }
+</style>

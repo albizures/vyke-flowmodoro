@@ -1,0 +1,65 @@
+---
+export type Props = {
+  children: unknown;
+  classId?: string;
+  type?:
+    | "neutral"
+    | "primary"
+    | "secondary"
+    | "accent"
+    | "ghost"
+    | "link"
+    | "info"
+    | "success"
+    | "warning"
+    | "error";
+  modifier?: "active" | "outline";
+  size?: "lg" | "md" | "sm" | "xs";
+  disabled?: boolean;
+  class?: string;
+};
+
+const {
+  type = "neutral",
+  modifier,
+  size = "md",
+  disabled = false,
+  class: className,
+  classId,
+} = Astro.props;
+---
+
+<button
+  disabled={disabled}
+  class:list={[
+    "btn",
+    {
+      // types
+      "btn-neutral": type === "neutral",
+      "btn-primary": type === "primary",
+      "btn-secondary": type === "secondary",
+      "btn-accent": type === "accent",
+      "btn-ghost": type === "ghost",
+      "btn-link": type === "link",
+      //
+      "btn-info": type === "info",
+      "btn-success": type === "success",
+      "btn-warning": type === "warning",
+      "btn-error": type === "error",
+
+      // modifier
+      "btn-active": modifier === "active",
+      "btn-outline": modifier === "outline",
+
+      // size
+
+      "btn-lg": size === "lg",
+      "btn-sm": size === "sm",
+      "btn-xs": size === "xs",
+    },
+    classId,
+    className,
+  ]}
+>
+  <slot />
+</button>

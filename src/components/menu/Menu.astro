@@ -1,0 +1,32 @@
+---
+export type Props = {
+  active: "clock" | "stopwatch" | "timer";
+};
+
+import MenuItem from "./MenuItem.astro";
+
+const { active } = Astro.props;
+---
+
+<div class="flex justify-center sticky top-0 py-4 -mt-20">
+  <div role="tablist" class="tabs tabs-boxed mb-4 md:mb-6 md:tabs-lg">
+    <MenuItem
+      href="/"
+      label="Time"
+      isActive={active === "clock"}
+      icon="clock"
+    />
+    <MenuItem
+      href="/stopwatch"
+      label="Stopwatch"
+      isActive={active === "stopwatch"}
+      icon="stopwatch"
+    />
+    <MenuItem
+      href="/timer"
+      label="Timer"
+      isActive={active === "timer"}
+      icon="timer"
+    />
+  </div>
+</div>

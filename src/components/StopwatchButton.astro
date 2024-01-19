@@ -1,0 +1,18 @@
+---
+export type Props = {
+  classId: string;
+  label: string;
+  class?: string;
+  disabled?: boolean;
+};
+
+const { classId, class: className, label, disabled } = Astro.props;
+---
+
+<button
+  disabled={disabled}
+  class:list={["btn btn-xs md:btn-md w-12 h-12", classId, className]}
+>
+  <span class="sr-only">{label}</span>
+  <slot />
+</button>

@@ -22,3 +22,13 @@ export type TimeValues = {
   seconds: number;
   millis: number;
 };
+
+export function zeroPad(value: number) {
+  const strValue = `${value}`;
+
+  if (strValue.length === 1) {
+    return `0${strValue}`;
+  }
+
+  return strValue;
+}

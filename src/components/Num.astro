@@ -1,0 +1,73 @@
+---
+export type Props = {
+  class?: string;
+  classId?: string;
+  defaultPrev?: string | number;
+  defaultNext?: string | number;
+};
+
+const {
+  class: className,
+  classId,
+  defaultNext = 1,
+  defaultPrev = 0,
+} = Astro.props;
+---
+
+<span class:list={["overflow-hidden tabular-nums", className]}>
+  <span
+    class:list={["num text-[1em] flex flex-col relative", classId]}
+    style={`--prev: '${defaultPrev}'; --next: '${defaultNext}';`}
+  >
+    <span class="content text-transparent"></span>
+  </span>
+</span>
+
+<style>
+  .content::before {
+    content: var(--next);
+  }
+
+  .num::before,
+  .num::after {
+    @apply absolute text-base-content;
+    animation: forwards 1s cubic-bezier(1, 0, 0, 1);
+  }
+
+  .num.odd::before {
+    animation-name: next-val;
+    content: var(--next);
+  }
+  .num.odd::after {
+    animation-name: prev-val;
+    content: var(--prev);
+  }
+
+  .num::before {
+    animation-name: prev-val;
+    content: var(--prev);
+  }
+  .num::after {
+    animation-name: next-val;
+    content: var(--next);
+  }
+
+  @keyframes next-val {
+    from {
+      transform: translateY(-1.5em);
+    }
+
+    to {
+      transform: translateY(0);
+    }
+  }
+  @keyframes prev-val {
+    from {
+      transform: translateY(0em);
+    }
+
+    to {
+      transform: translateY(1.5em);
+    }
+  }
+</style>

@@ -190,6 +190,16 @@ import Button from "../components/Button.astro";
   );
   const cssVar = "--value";
 
+  startTime.value;
+
+  if (status.value === "focus") {
+    const initialDelta = fromMilliToTime(Date.now() - startTime.value);
+    if (initialDelta.minutes > 365) {
+      status.value = "stopped-break";
+      breakTime.value = 0;
+    }
+  }
+
   if (status.value === "focus") {
     run();
     showStopBtn();

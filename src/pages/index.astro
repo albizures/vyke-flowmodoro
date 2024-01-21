@@ -103,6 +103,26 @@ import Button from "../components/Button.astro";
         </div>
       </div>
     </div>
+    <div
+      class="alert-container absolute inset-0 h-full w-full flex hidden justify-center items-center bg-base-100 bg-opacity-50"
+    >
+      <div>
+        <div role="alert" class="alert shadow-lg border border-base-300">
+          <Icon icon="info" />
+          <div>
+            <h3 class="font-bold">Too short focus session!</h3>
+            <div class="text-xs">
+              this means the break time would be too short as well
+            </div>
+          </div>
+          <div>
+            <button class="cancel-btn btn btn-sm">Cancel</button>
+            <button class="continue-btn btn btn-sm btn-primary">Continue</button
+            >
+          </div>
+        </div>
+      </div>
+    </div>
   </CenterHero>
 
   <div
@@ -188,6 +208,11 @@ import Button from "../components/Button.astro";
       query<HTMLSpanElement>(".in-focus-label")
     )
   );
+
+  const [alertContainer] = unwrap(
+    select(query<HTMLDivElement>(".alert-container"))
+  );
+
   const cssVar = "--value";
 
   startTime.value;
@@ -287,19 +312,36 @@ import Button from "../components/Button.astro";
     }
   };
 
+  function stopFocus() {
+    const delta = Date.now() - startTime.value;
+    const nextBreakTime = delta / breakTimeRatio.value;
+    breakTime.value = nextBreakTime;
+
+    if (autoStartBreak.value) {
+      startBreak();
+    } else {
+      updateBreakTimeLabel(delta);
+      status.value = "stopped-focus";
+      showPlayBtn();
+    }
+    showInBreak();
+  }
+
   stopBtn.onclick = () => {
     if (status.value === "focus") {
       const delta = Date.now() - startTime.value;
-      breakTime.value = delta / breakTimeRatio.value;
+      const nextBreakTime = delta / breakTimeRatio.value;
 
-      if (autoStartBreak.value) {
-        startBreak();
+      if (nextBreakTime < 60 * 1000) {
+        import("../entities/alert").then((module) => {
+          module.openAlert({
+            alertContainer,
+            onContinue: stopFocus,
+          });
+        });
       } else {
-        updateBreakTimeLabel(delta);
-        status.value = "stopped-focus";
-        showPlayBtn();
+        stopFocus();
       }
-      showInBreak();
     } else if (status.value === "break") {
       status.value = "stopped-break";
       showInFocus();

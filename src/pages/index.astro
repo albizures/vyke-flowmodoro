@@ -2,7 +2,6 @@
 import Footer from "../components/Footer.astro";
 import Icon from "../components/Icon.astro";
 import StopwatchButton from "../components/StopwatchButton.astro";
-// import Menu from "../components/menu/Menu.astro";
 import CenterHero from "../layouts/CenterHero.astro";
 import Page from "../layouts/Page.astro";
 import * as About from "../components/about.md";
@@ -21,7 +20,7 @@ import Num from "../components/Num.astro";
         <Num classId="value-minutes" defaultPrev={"00"} defaultNext={"00"} />:
         <Num classId="value-seconds" defaultPrev={"00"} defaultNext={"00"} />
         <span class="text-2xl sm:text-5xl md:text-6xl">
-          <span>:</span><span class="value-millis tabular-nums"></span>
+          <span>:</span><span class="value-millis tabular-nums">00</span>
         </span>
       </span>
     </div>
@@ -117,8 +116,9 @@ import Num from "../components/Num.astro";
             </div>
           </div>
           <div>
-            <button class="cancel-btn btn btn-sm">Cancel</button>
-            <button class="continue-btn btn btn-sm btn-primary">Continue</button
+            <button class="cancel-btn btn btn-sm">Continue Focus</button>
+            <button class="continue-btn btn btn-sm btn-primary"
+              >Finish Focus</button
             >
           </div>
         </div>
@@ -242,6 +242,7 @@ import Num from "../components/Num.astro";
   if (status.value === "stopped-focus") {
     showInBreak();
     updateBreakTimeLabel(breakTime.value);
+    update(fromMilliToTime(breakTime.value));
   }
 
   if (status.value === "stopped-break") {
@@ -322,7 +323,7 @@ import Num from "../components/Num.astro";
     if (autoStartBreak.value) {
       startBreak();
     } else {
-      updateBreakTimeLabel(delta);
+      update(fromMilliToTime(nextBreakTime));
       status.value = "stopped-focus";
       showPlayBtn();
     }
@@ -363,6 +364,7 @@ import Num from "../components/Num.astro";
           } else {
             status.value = "stopped-break";
             update(fromMilliToTime(0));
+            showPlayBtn();
           }
           break;
         }
@@ -370,6 +372,8 @@ import Num from "../components/Num.astro";
         delta = Date.now() - startTime.value;
 
         updateBreakTimeLabel(delta);
+      } else {
+        break;
       }
 
       update(fromMilliToTime(delta));
@@ -388,9 +392,12 @@ import Num from "../components/Num.astro";
 
   function updateNum(el: HTMLElement, next: number) {
     const prev = Number(el.dataset.prev);
-    if (!Number.isNaN(prev) && prev !== next) {
+    if (prev !== next) {
       setStyleVar(el, cssNextVar, `"${zeroPad(next)}"`);
-      setStyleVar(el, cssPrevVar, `"${zeroPad(prev)}"`);
+      if (!Number.isNaN(prev)) {
+        setStyleVar(el, cssPrevVar, `"${zeroPad(prev)}"`);
+      }
+
       el.classList.toggle("odd");
       el.dataset.prev = `${next}`;
     } else {

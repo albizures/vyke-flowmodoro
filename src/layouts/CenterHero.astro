@@ -1,9 +1,16 @@
 ---
+export type Props = {
+  classId?: string;
+};
 
+const { classId } = Astro.props;
 ---
 
 <main
-  class="pb-10 px-6 relative w-full h-[90vh] flex flex-col justify-center items-center"
+  class:list={[
+    "pb-10 px-6 relative w-full h-[90vh] flex flex-col justify-center items-center",
+    classId,
+  ]}
 >
   <slot />
 </main>

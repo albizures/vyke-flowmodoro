@@ -12,7 +12,7 @@ export const SITE: Site = {
   website: "https://flowmodoro.vyke.dev",
   author: "Jose Albizures",
   description:
-    "Flowmodoro, allows you to take advantage of flow state to complete your to do list.",
+    "Flowmodoro technique allows you to take advantage of flow state to complete your to do list.",
   title: "Flowmodoro by Vyke",
 
   // ogImage: 'main.jpg',

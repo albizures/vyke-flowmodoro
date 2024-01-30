@@ -1,7 +1,7 @@
 ---
-import { IconLinks } from "@vyke/astro";
+import { IconLinks, Header, ThemeController } from "@vyke/astro";
 import { SITE } from "../config";
-import Header from "../components/Header.astro";
+import { themes } from "../themes";
 
 export type Props = {
   title?: string;
@@ -58,7 +58,9 @@ const socialImageURL = new URL(
     <meta name="theme-color" content="" />
   </head>
   <body tabindex="0">
-    <Header />
+    <Header title="web">
+      <ThemeController themes={themes} slot="right" />
+    </Header>
     <slot />
 
     {

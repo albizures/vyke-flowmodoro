@@ -5,7 +5,7 @@ export type Props = {
   classId: string;
   type?: "text" | "number";
   placeholder?: string;
-  topRighLabel?: string;
+  topRightLabel?: string;
   bottomLeftLabel?: string;
   bottomRightLabel?: string;
 };
@@ -13,7 +13,7 @@ export type Props = {
 const {
   label,
   defaultValue,
-  topRighLabel,
+  topRightLabel,
   bottomLeftLabel,
   bottomRightLabel,
   type = "text",
@@ -26,7 +26,7 @@ const {
   <div class="label">
     <span class="label-text font-semibold">{label}</span>
 
-    {topRighLabel && <span class="label-text-alt">{topRighLabel}</span>}
+    {topRightLabel && <span class="label-text-alt">{topRightLabel}</span>}
   </div>
   <input
     type={type}

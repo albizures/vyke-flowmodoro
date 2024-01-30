@@ -1,5 +1,6 @@
 ---
 import Icon from "../components/Icon.astro";
+import { Section } from "@vyke/astro";
 import StopwatchButton from "../components/StopwatchButton.astro";
 import CenterHero from "../layouts/CenterHero.astro";
 import Page from "../layouts/Page.astro";
@@ -139,10 +140,12 @@ import Footer from "../components/Footer.astro";
     </div>
   </CenterHero>
 
-  <div
-    class="mx-auto max-w-xl px-4 prose-h2:font-serif prose prose-p:text-justify prose-h2:text-center"
-    set:html={About.compiledContent()}
-  />
+  <Section>
+    <div
+      class="max-w-full prose-h2:font-serif prose prose-p:text-justify prose-h2:text-center"
+      set:html={About.compiledContent()}
+    />
+  </Section>
   <Footer />
 </Page>
 

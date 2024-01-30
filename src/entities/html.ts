@@ -25,10 +25,3 @@ export function show(...elements: Array<HTMLElement>) {
     removeClass(element, hiddenClass);
   }
 }
-
-const shakeClass = "animate-shake";
-
-export function shake(element: HTMLElement) {
-  addClass(element, shakeClass);
-  setTimeout(removeClass, 1000, element, shakeClass);
-}

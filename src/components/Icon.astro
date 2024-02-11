@@ -26,9 +26,14 @@ const icons = {
   stop: "fa-solid:stop",
   info: "fa-solid:info",
   pip: "fa-solid:window-minimize",
+  trash: "fa-solid:trash",
+  plus: "fa-solid:plus",
+  light: "fa-solid:sun",
+  dark: "fa-solid:moon",
+  share: "fa-solid:share",
 };
 
 const iconName = icons[icon];
 ---
 
-<AstroIcon class={className} name={iconName} />
+<AstroIcon is:inline class={className} name={iconName} />

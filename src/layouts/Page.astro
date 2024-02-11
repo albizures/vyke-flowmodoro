@@ -1,7 +1,7 @@
 ---
-import { IconLinks, Header, ThemeController } from "@vyke/astro";
+import { IconLinks, Header, ThemeToggle, Theme } from "@vyke/astro";
 import { SITE } from "../config";
-import { themes } from "../themes";
+import Icon from "../components/Icon.astro";
 
 export type Props = {
   title?: string;
@@ -29,6 +29,7 @@ const socialImageURL = new URL(
 <!doctype html>
 <html lang="en" data-theme="cupcake">
   <head>
+    <Theme />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <IconLinks />
@@ -57,9 +58,12 @@ const socialImageURL = new URL(
     <meta name="twitter:image" content={socialImageURL} />
     <meta name="theme-color" content="" />
   </head>
-  <body tabindex="0">
+  <body>
     <Header title="flowmodoro">
-      <ThemeController themes={themes} slot="right" />
+      <ThemeToggle slot="right">
+        <Icon slot="light" class="text-2xl" icon="light" />
+        <Icon slot="dark" class="text-2xl" icon="dark" />
+      </ThemeToggle>
     </Header>
     <slot />
 
